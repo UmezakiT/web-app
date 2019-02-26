@@ -1,0 +1,29 @@
+{
+  "name": "web-app",
+  "version": "1.0.0",
+  "description": "web-app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UmezakiT/web-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UmezakiT/web-app/issues"
+  },
+  "homepage": "https://github.com/UmezakiT/web-app#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.4",
+    "mongojs": "^2.6.0",
+    "mongoose": "^5.4.16",
+    "morgan": "^1.9.1",
+    "request": "^2.88.0"
+  }
+}
