@@ -2,4 +2,4 @@ Web Scraper
 
 Alex Rosenkranz version.
 
-Heroku link:
+Heroku link: https://web-scraper-tester.herokuapp.com/
