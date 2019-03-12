@@ -1,48 +1,37 @@
-const mongoose = require("mongoose");
-const express = require("express");
-const logger = require("morgan");
-const axios = require("axios");
-const cheerio = require("cheerio");
+var express = require("express");
+var logger = require("morgan");
+var mongoose = require("mongoose");
+var axios = require("axios");
+var cheerio = require("cheerio");
 
+var db = require("./models");
+var PORT = 3000;
+var app = express();
 
-let db = require("./models");
-let PORT = 3000;
-let app = express();
 
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/test", { useNewUrlParser: true });
-
-// Routes
+mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
 
 app.get("/scrape", function (req, res) {
-
   axios.get("http://www.echojs.com/").then(function (response) {
-    let $ = cheerio.load(response.data);
+    var $ = cheerio.load(response.data);
     const articleArr = [];
-   
     $("article h2").each(function (i, element) {
       var result = {};
-
-      result.title = $(this).children("a").text();
-      result.link = $(this).children("a").attr("href");
-
+      result.title = $(this)
+        .children("a")
+        .text();
+      result.link = $(this)
+        .children("a")
+        .attr("href");
       articleArr.push(result);
-
-      // db.Articles.create(scrapedArticles)
-      //   .then(function(dbArticle) {
-      //     console.log(dbArticle);
-      //   })
-      //   .catch(function(err) {
-      //     console.log(err);
-      //   });
-     
     });
 
-    db.Articles.create(articleArr)
+    db.Article.create(articleArr)
       .then(() => res.send("Scrape Complete"))
       .catch(err => {
         console.log(err);
@@ -53,7 +42,7 @@ app.get("/scrape", function (req, res) {
 });
 
 app.get("/articles", function (req, res) {
-  db.Articles.find({})
+  db.Article.find({})
     .then(function (dbArticle) {
       res.json(dbArticle);
     })
@@ -61,11 +50,10 @@ app.get("/articles", function (req, res) {
       res.json(err);
     });
 });
-
 
 app.get("/articles/:id", function (req, res) {
-  db.Articles.findOne({ _id: req.params.id })
-    .populate("notes")
+  db.Article.findOne({ _id: req.params.id })
+    .populate("note")
     .then(function (dbArticle) {
       res.json(dbArticle);
     })
@@ -73,12 +61,11 @@ app.get("/articles/:id", function (req, res) {
       res.json(err);
     });
 });
-
 
 app.post("/articles/:id", function (req, res) {
-  db.Notes.create(req.body)
+  db.Note.create(req.body)
     .then(function (dbNote) {
-      return db.Articles.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
     })
     .then(function (dbArticle) {
       res.json(dbArticle);
@@ -87,7 +74,6 @@ app.post("/articles/:id", function (req, res) {
       res.json(err);
     });
 });
-
 
 app.listen(PORT, function () {
   console.log("App running on port " + PORT + "!");
